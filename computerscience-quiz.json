@@ -1,0 +1,39 @@
+{
+    "quizzes": {
+      "Computer Science": {
+        "questions": [
+          {
+            "question": "Which programming language is known as the backbone of the web?",
+            "type": "single",
+            "options": ["JavaScript", "Python", "Java"],
+            "correctAnswer": "JavaScript"
+          },
+          {
+            "question": "Which of the following are web development languages?",
+            "type": "multiple",
+            "options": ["HTML", "C++", "CSS"],
+            "correctAnswers": ["HTML", "CSS"]
+          },
+          {
+            "question": "What does “CPU” stand for?",
+            "type": "single",
+            "options": ["Central Processing Unit", "Central Power Unit", "Computer Processing Unit"],
+            "correctAnswer": "Central Processing Unit"
+          },
+          {
+            "question": "Which of these are operating systems?",
+            "type": "multiple",
+            "options": ["Windows", "Linux", "Photoshop"],
+            "correctAnswers": ["Windows", "Linux"]
+          },
+          {
+            "question": "Which company developed the Android operating system?",
+            "type": "single",
+            "options": ["Google", "Apple", "Microsoft"],
+            "correctAnswer": "Google"
+          }
+        ]
+      }
+    }
+  }
+  
