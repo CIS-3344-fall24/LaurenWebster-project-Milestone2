@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Computer Science Quiz</title>
+    <title>History Quiz</title>
     <link rel="stylesheet" href="styles.css">
     <style>
         body {
@@ -15,17 +15,13 @@
             padding: 0;
             background-color: #f0f0f0;
         }
-        .quiz-container {
+        .quiz-container, .completion-container {
             width: 80%;
             max-width: 600px;
             background: white;
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-        }
-        .loading-spinner {
-            display: none;
-            margin: 20px;
         }
         .progress-bar-container {
             width: 100%;
@@ -52,41 +48,43 @@
         button:hover {
             background-color: #45a049;
         }
-        .result-container {
+        .completion-container {
             display: none;
             text-align: center;
-            margin-top: 20px;
         }
     </style>
 </head>
 <body>
+
     <div class="progress-bar-container">
         <div class="progress-bar" role="progressbar" style="width: 0%;" id="progressBar"></div>
     </div>
 
     <section class="quiz-container" id="quizSection">
-        <h1>Computer Science Quiz</h1>
+        <h1>History Quiz</h1>
         <form id="quizForm">
             <div id="questionsContainer"></div>
             <button type="button" onclick="submitQuiz()">Submit Quiz</button>
         </form>
     </section>
 
-    <section class="result-container" id="resultSection">
-        <p id="scoreMessage"></p>
+    <section class="completion-container" id="completionPage">
+        <h1>Congratulations!</h1>
+        <p id="completionMessage"></p>
         <button onclick="retakeQuiz()">Retake Quiz</button>
+        <button onclick="goToLandingPage()">Go to Landing Page</button>
     </section>
 
     <script>
         async function loadQuiz() {
             try {
-                const response = await fetch('computerscience-quiz.json');
+                const response = await fetch('history-quiz.json');
                 const data = await response.json();
-                const computerScienceQuiz = data.quizzes.computerScience;
+                const historyQuiz = data.quizzes.history;
                 const questionsContainer = document.getElementById('questionsContainer');
                 questionsContainer.innerHTML = '';
 
-                computerScienceQuiz.forEach((question, index) => {
+                historyQuiz.forEach((question, index) => {
                     const fieldset = document.createElement('fieldset');
                     const legend = document.createElement('legend');
                     legend.textContent = question.type === 'radio' ? 'Select one answer:' : 'Select all that apply:';
@@ -120,12 +118,12 @@
             const formData = new FormData(quizForm);
             let score = 0;
 
-            fetch('computerscience-quiz.json')
+            fetch('history-quiz.json')
                 .then(response => response.json())
                 .then(data => {
-                    const computerScienceQuiz = data.quizzes.computerScience;
+                    const historyQuiz = data.quizzes.history;
 
-                    computerScienceQuiz.forEach((question, index) => {
+                    historyQuiz.forEach((question, index) => {
                         if (question.type === 'radio') {
                             if (formData.get(`q${index}`) === question.correctAnswer) {
                                 score++;
@@ -140,17 +138,34 @@
                         }
                     });
 
-                    document.getElementById('scoreMessage').textContent = `Your score: ${score} out of ${computerScienceQuiz.length}`;
-                    document.getElementById('quizSection').style.display = 'none';
-                    document.getElementById('resultSection').style.display = 'block';
+                    const name = sessionStorage.getItem('name') || 'Student';
+                    sessionStorage.setItem('score', score);
+
+                    showCompletionPage(name, score, historyQuiz.length);
                 })
                 .catch(error => console.error("Error calculating score:", error));
         }
 
+        function showCompletionPage(name, score, totalQuestions) {
+            const completionPage = document.getElementById('completionPage');
+            const completionMessage = document.getElementById('completionMessage');
+            completionMessage.textContent = `Congratulations ${name}! You scored ${score} out of ${totalQuestions}.`;
+
+            document.getElementById('quizSection').style.display = 'none';
+            completionPage.style.display = 'block';
+        }
+
         function retakeQuiz() {
+            sessionStorage.removeItem('score');
+            loadQuiz(); 
             document.getElementById('quizSection').style.display = 'block';
-            document.getElementById('resultSection').style.display = 'none';
-            loadQuiz();
+            document.getElementById('completionPage').style.display = 'none';
+            document.getElementById('progressBar').style.width = '0%';
+        }
+
+        function goToLandingPage() {
+            sessionStorage.clear();
+            window.location.href = 'landingPage.html';
         }
 
         window.onload = loadQuiz;
