@@ -1,0 +1,31 @@
+{
+    "quizzes": {
+      "Math": {
+        "questions": [
+          {
+            "question": "What is 2+2?",
+            "type": "single",
+            "options": ["2", "3", "4", "5"],
+            "correctAnswer": "4"
+          },
+          {
+            "question": "Which of the following are prime numbers?",
+            "type": "multiple",
+            "options": ["2", "3", "4", "6"],
+            "correctAnswers": ["2", "3"]
+          }
+        ]
+      },
+      "Algebra": {
+        "questions": [
+          {
+            "question": "What is the value of x in the equation 2x + 3 = 7?",
+            "type": "single",
+            "options": ["1", "2", "3", "4"],
+            "correctAnswer": "2"
+          }
+        ]
+      }
+    }
+  }
+  

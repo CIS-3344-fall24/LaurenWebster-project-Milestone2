@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Complete</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <section class="completion-container text-center">
+        <div class="container">
+            <h1>Congratulations!</h1>
+            <p id="completionMessage"></p>
+            <div class="mt-4">
+                <a href="index.html" id="backHomeButton" class="btn btn-primary">Back to Home</a>
+                <a href="quiz.html" id="retakeButton" class="btn btn-secondary">Retake Quiz</a>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        const name = sessionStorage.getItem("userName");
+        const score = sessionStorage.getItem("score");
+        const totalQuestions = sessionStorage.getItem("totalQuestions");
+
+        if (name && score !== null && totalQuestions !== null) {
+            const completionMessage = document.getElementById("completionMessage");
+            completionMessage.textContent = `Congratulations ${name}! You scored ${score} out of ${totalQuestions}.`;
+        } else {
+            window.location.href = "index.html";
+        }
+
+        document.getElementById("retakeButton").addEventListener("click", () => {
+            sessionStorage.removeItem("userName");
+            sessionStorage.removeItem("score");
+            sessionStorage.removeItem("totalQuestions");
+            window.location.href = "quiz.html"; 
+        });
+
+        document.getElementById("backHomeButton").addEventListener("click", () => {
+            sessionStorage.removeItem("userName");
+            sessionStorage.removeItem("score");
+            sessionStorage.removeItem("totalQuestions");
+            window.location.href = "index.html";
+        });
+    </script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .completion-container {
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .completion-container h1 {
+            color: #6c757d;
+            margin-bottom: 20px;
+        }
+
+        .completion-container p {
+            font-size: 18px;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .btn-primary {
+            margin-right: 10px;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            border-color: #6c757d;
+        }
+    </style>
+</body>
+</html>

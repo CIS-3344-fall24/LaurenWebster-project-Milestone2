@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Knowledge Quiz</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <header class="hero">
+        <h1>Welcome to the Knowledge Quiz!</h1>
+        <p>Test your knowledge and have fun while learning something new.</p>
+    </header>
+
+    <section class="subject-selection container">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card flip-card">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            <img src="algebra.jpg" alt="Algebra" class="subject-image">
+                            <h2>Algebra</h2>
+                        </div>
+                        <div class="flip-card-back">
+                            <p>Test your knowledge of algebra and mathematical concepts!</p>
+                            <form action="quiz-algebra.html" onsubmit="return validateForm()">
+                                <input type="text" id="name" placeholder="Enter your name" class="form-control mb-2" required>
+                                <input type="email" id="email" placeholder="Enter your email" class="form-control mb-2" required>
+                                <input type="email" id="confirmEmail" placeholder="Confirm your email" class="form-control mb-2" required>
+                                <button type="submit" class="btn btn-primary">Start Quiz</button>
+                                <div id="errorMessage" style="color: red; margin-top: 10px;"></div>
+                            </form>
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card flip-card">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            <img src="history.jpg" alt="History" class="subject-image">
+                            <h2>History</h2>
+                        </div>
+                        <div class="flip-card-back">
+                            <p>Challenge yourself with questions on world history!</p>
+                            <form action="quiz-history.html">
+                                <input type="text" placeholder="Enter your name" class="form-control mb-2" required>
+                                <input type="email" placeholder="Enter your email" class="form-control mb-2" required>
+                                <input type="email" placeholder="Confirm your email" class="form-control mb-2" required>
+                                <button type="submit" class="btn btn-primary">Start Quiz</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card flip-card">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            <img src="computerscience.jpg" alt="Computer Science" class="subject-image">
+                            <h2>Computer Science</h2>
+                        </div>
+                        <div class="flip-card-back">
+                            <p>Explore the wonders of technology with exciting questions!</p>
+                            <form action="quiz-computerscience.html">
+                                <input type="text" placeholder="Enter your name" class="form-control mb-2" required>
+                                <input type="email" placeholder="Enter your email" class="form-control mb-2" required>
+                                <input type="email" placeholder="Confirm your email" class="form-control mb-2" required>
+                                <button type="submit" class="btn btn-primary">Start Quiz</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <style>
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+        }
+
+        .hero {
+            text-align: center;
+            background-color: #b7b7a4;
+            color: white;
+            padding: 50px 20px;
+        }
+
+        .subject-selection {
+            margin-top: 20px;
+            padding-bottom: 20px;
+        }
+
+        .flip-card {
+            width: 100%;
+            height: 350px;
+            perspective: 1000px;
+            margin-bottom: 20px;
+        }
+
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+
+        .flip-card:hover .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .flip-card-front, .flip-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .flip-card-front {
+            background-color: #f0f0f0;
+        }
+
+        .flip-card-back {
+            background-color: #b7b7a4;
+            color: white;
+            transform: rotateY(180deg);
+        }
+
+        .subject-image {
+            width: 80%;
+            height: auto;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .btn-primary {
+            width: 100%;
+        }
+    </style>
+    <script>
+        function validateForm() {
+            const name = document.getElementById("name").value;
+            const email = document.getElementById("email").value;
+            const confirmEmail = document.getElementById("confirmEmail").value;
+            const errorMessage = document.getElementById("errorMessage");
+        
+            errorMessage.textContent = "";
+        
+            if (name.length < 3) {
+                errorMessage.textContent = "Name must be at least 3 characters long.";
+                return false;
+            }
+        
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailPattern.test(email)) {
+                errorMessage.textContent = "Please enter a valid email address.";
+                return false;
+            }
+        
+            if (email !== confirmEmail) {
+                errorMessage.textContent = "Email and Confirm Email fields must match.";
+                return false;
+            }
+        
+            sessionStorage.setItem("userName", name);
+        
+            return true;
+        }
+        
+        document.addEventListener("DOMContentLoaded", () => {
+            const userName = sessionStorage.getItem("userName");
+            if (userName) {
+                document.getElementById("userGreeting").textContent = `Hello, ${userName}!`;
+            }
+        });
+        </script>
+        
+</body>
+</html>

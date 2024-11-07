@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Computer Science Quiz</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+        }
+        .quiz-container {
+            width: 80%;
+            max-width: 600px;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .loading-spinner {
+            display: none;
+            margin: 20px;
+        }
+        .progress-bar-container {
+            width: 100%;
+            height: 10px;
+            background-color: #e0e0e0;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .progress-bar {
+            height: 10px;
+            background-color: #4caf50;
+            border-radius: 5px;
+            width: 0%;
+            transition: width 0.3s;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="progress">
+        <div class="progress-bar" role="progressbar" style="width: 0%;" id="progressBar"></div>
+    </div>
+
+    <section class="quiz-container">
+        <h1>Computer Science Quiz</h1>
+        <form id="quizForm">
+            <div id="questionsContainer"></div>
+            <button type="button" onclick="submitQuiz()">Submit Quiz</button>
+        </form>
+    </section>
+
+    <script>
+        async function loadQuiz() {
+            try {
+                const response = await fetch('computerscience-quiz.json');
+                const data = await response.json();
+                const computerScienceQuiz = data.quizzes.computerScience;
+                const quizContent = document.getElementById('quizContent');
+                quizContent.innerHTML = '';
+
+                computerScienceQuiz.forEach((question, index) => {
+                    const fieldset = document.createElement('fieldset');
+                    const legend = document.createElement('legend');
+                    legend.textContent = question.type === 'radio' ? 'Select one answer:' : 'Select all that apply:';
+                    fieldset.appendChild(legend);
+
+                    const questionText = document.createElement('p');
+                    questionText.textContent = question.question;
+                    fieldset.appendChild(questionText);
+
+                    question.options.forEach(option => {
+                        const label = document.createElement('label');
+                        const input = document.createElement('input');
+                        input.type = question.type;
+                        input.name = `q${index}`;
+                        input.value = option;
+                        label.appendChild(input);
+                        label.appendChild(document.createTextNode(option));
+                        fieldset.appendChild(label);
+                        fieldset.appendChild(document.createElement('br'));
+                    });
+
+                    quizContent.appendChild(fieldset);
+                });
+            } catch (error) {
+                console.error("Error loading quiz:", error);
+            }
+        }
+
+        function submitQuiz() {
+            const quizForm = document.getElementById('quizForm');
+            const formData = new FormData(quizForm);
+            let score = 0;
+
+            fetch('computerscience-quiz.json')
+                .then(response => response.json())
+                .then(data => {
+                    const computerScienceQuiz = data.quizzes.computerScience;
+
+                    computerScienceQuiz.forEach((question, index) => {
+                        if (question.type === 'radio') {
+                            if (formData.get(`q${index}`) === question.correctAnswer) {
+                                score++;
+                            }
+                        } else if (question.type === 'checkbox') {
+                            const selectedOptions = formData.getAll(`q${index}`);
+                            const correctAnswers = question.correctAnswers;
+                            if (selectedOptions.length === correctAnswers.length && 
+                                selectedOptions.every(opt => correctAnswers.includes(opt))) {
+                                score++;
+                            }
+                        }
+                    });
+
+                    const scoreMessage = document.createElement('p');
+                    scoreMessage.textContent = `Your score: ${score} out of ${computerScienceQuiz.length}`;
+                    document.querySelector('.quiz-container').appendChild(scoreMessage);
+                })
+                .catch(error => console.error("Error calculating score:", error));
+        }
+
+        window.onload = loadQuiz;
+
+    </script>
+</body>
+</html>

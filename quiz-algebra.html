@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Math Quiz</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+        }
+        .quiz-container {
+            width: 80%;
+            max-width: 600px;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .loading-spinner {
+            display: none;
+            margin: 20px;
+        }
+        .progress-bar-container {
+            width: 100%;
+            height: 10px;
+            background-color: #e0e0e0;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .progress-bar {
+            height: 10px;
+            background-color: #4caf50;
+            border-radius: 5px;
+            width: 0%;
+            transition: width 0.3s;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="progress-bar-container">
+        <div class="progress-bar" id="progress-bar"></div>
+    </div>
+
+    <div class="loading-spinner" id="loading-spinner">Loading quiz...</div>
+
+    <section class="quiz-container" id="quiz-container">
+        <h1>Math Quiz</h1>
+        <form id="quiz-form">
+            <button type="submit">Submit Quiz</button>
+        </form>
+    </section>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const quizContainer = document.getElementById("quiz-container");
+            const progressBar = document.getElementById("progress-bar");
+            const loadingSpinner = document.getElementById("loading-spinner");
+            const quizForm = document.getElementById("quiz-form");
+
+            const subject = "Math";
+
+            fetch("algebra-quiz.json")
+                .then(response => response.json())
+                .then(data => {
+                    const questions = data.quizzes[subject].questions;
+                    displayQuestions(questions);
+                    loadingSpinner.style.display = "none";
+                    updateProgressBar(0, questions.length);
+                })
+                .catch(error => {
+                    console.error("Error loading quiz data:", error);
+                    loadingSpinner.textContent = "Failed to load quiz.";
+                });
+
+            function displayQuestions(questions) {
+                questions.forEach((q, index) => {
+                    const fieldset = document.createElement("fieldset");
+                    const legend = document.createElement("legend");
+                    legend.textContent = q.type === "single" ? "Select one answer:" : "Select all that apply:";
+                    fieldset.appendChild(legend);
+
+                    const questionText = document.createElement("p");
+                    questionText.textContent = q.question;
+                    fieldset.appendChild(questionText);
+
+                    q.options.forEach(option => {
+                        const label = document.createElement("label");
+                        const input = document.createElement("input");
+                        input.type = q.type === "single" ? "radio" : "checkbox";
+                        input.name = `q${index}`;
+                        input.value = option;
+                        label.appendChild(input);
+                        label.append(` ${option}`);
+                        fieldset.appendChild(label);
+                        fieldset.appendChild(document.createElement("br"));
+                    });
+
+                    quizForm.insertBefore(fieldset, quizForm.querySelector("button"));
+                });
+            }
+
+            quizForm.addEventListener("submit", event => {
+                event.preventDefault();
+                calculateScore();
+            });
+
+            function calculateScore() {
+                fetch("algebra-quiz.json")
+                    .then(response => response.json())
+                    .then(data => {
+                        let score = 0;
+                        const questions = data.quizzes[subject].questions;
+
+                        questions.forEach((q, index) => {
+                            const answers = Array.from(quizForm[`q${index}`])
+                                .filter(input => input.checked)
+                                .map(input => input.value);
+
+                            if (q.type === "single" && answers[0] === q.correctAnswer) {
+                                score++;
+                            } else if (q.type === "multiple" && JSON.stringify(answers.sort()) === JSON.stringify(q.correctAnswers.sort())) {
+                                score++;
+                            }
+                        });
+
+                        const userName = sessionStorage.getItem("userName");
+                        sessionStorage.setItem("score", score);
+                        sessionStorage.setItem("totalQuestions", questions.length);
+
+                        window.location.href = "complete.html";
+                    })
+                    .catch(error => console.error("Error calculating score:", error));
+            }
+
+            function updateProgressBar(currentQuestionIndex, totalQuestions) {
+                const progress = (currentQuestionIndex / totalQuestions) * 100;
+                progressBar.style.width = `${progress}%`;
+            }
+        });
+    </script>
+</body>
+</html>

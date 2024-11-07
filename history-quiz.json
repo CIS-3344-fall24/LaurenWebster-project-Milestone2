@@ -1,0 +1,39 @@
+{
+    "quizzes": {
+      "History": {
+        "questions": [
+          {
+            "question": "Who was the first President of the United States?",
+            "type": "single",
+            "options": ["George Washington", "Thomas Jefferson", "John Adams"],
+            "correctAnswer": "George Washington"
+          },
+          {
+            "question": "Which countries were part of the Allied Powers in World War II?",
+            "type": "multiple",
+            "options": ["United States", "Germany", "Soviet Union"],
+            "correctAnswers": ["United States", "Soviet Union"]
+          },
+          {
+            "question": "When did the American Civil War end?",
+            "type": "single",
+            "options": ["1865", "1776", "1918"],
+            "correctAnswer": "1865"
+          },
+          {
+            "question": "Who were some key figures in the Renaissance period?",
+            "type": "multiple",
+            "options": ["Leonardo da Vinci", "Albert Einstein", "Michelangelo"],
+            "correctAnswers": ["Leonardo da Vinci", "Michelangelo"]
+          },
+          {
+            "question": "Which ancient civilization built the pyramids?",
+            "type": "single",
+            "options": ["Egyptian", "Roman", "Mayan"],
+            "correctAnswer": "Egyptian"
+          }
+        ]
+      }
+    }
+  }
+  
